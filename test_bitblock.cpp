@@ -27,4 +27,18 @@ int main(){
 
     cout << "B1 Left Shift 4" << endl;
     cout << (block1 << 4) << endl;
+
+
+    // bitblock get and set.
+
+    bitblock b(8);
+    b.valSet("11111111");
+    cout << "The bit string of " << b.getInt64()
+         << " is " << b << endl;
+
+    b.valSet(254);
+    cout << "The bit string of " << b.getInt64()
+         << " is " << b << endl;
+
+    return 0;
 }

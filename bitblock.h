@@ -8,28 +8,36 @@ using namespace std;
 
 class bitblock{
     public:
-        vector<bool> bits;
+   	 vector<bool> bits;
 
-        //Instantiate with an int for num bits
-        bitblock ( int ) ;
+   	 //Instantiate with an int for num bits
+   	 bitblock ( int ) ;
 
-        //Set the value to a binary string "11001101..."
-        void valSet( const char*);
+         //resizes the bitblock to n bits
+         void resize(int n);
 
-        //Printing out the binary
-        friend std::ostream& operator << (std::ostream&, const bitblock&);
+   	 //Set the value to a binary string "11001101..."
+   	 void valSet( const char*);
+         void valSet( long long);
 
-        //& overload
-        bitblock operator & (const bitblock&) const;
+   	 //Printing out the binary
+   	 friend std::ostream& operator << (std::ostream&, const bitblock&);
 
-        //^ (XOR) overload
-        bitblock operator ^ (const bitblock&) const;
+   	 //& overload
+   	 bitblock operator & (const bitblock&) const;
 
-        //! overload
-        bitblock operator ! ( void ) const;
+   	 //^ (XOR) overload
+   	 bitblock operator ^ (const bitblock&) const;
 
-        //<< overload
-        bitblock operator << (const int) const;
+   	 //! overload
+   	 bitblock operator ! ( void ) const;
+
+   	 //<< overload
+   	 bitblock operator << (const int) const;
+
+
+	 // returns a 64-bit number equivalent of the bitBlock
+         long long getInt64() const;
 };
 
 #endif
