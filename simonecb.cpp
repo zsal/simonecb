@@ -83,36 +83,6 @@ uberzahl encrypt(uberzahl msg) {
 
 
 	for (int i = 0; i < T; i++){
-		//Couting each step
-		/*if(i == T-1){
-			uberzahl Sx = x.rotateLeft(1,0,n-1);
-			uberzahl S8x = x.rotateLeft(8,0,n-1);
-			uberzahl SxS8x = Sx & S8x;
-			uberzahl S2x = x.rotateLeft(2,0,n-1);
-			uberzahl SxS8xS2x = SxS8x ^ S2x;
-			uberzahl ySxS8xS2x = y ^ SxS8xS2x;
-			uberzahl ySxS8xS2xk = ySxS8xS2x ^ k[i];
-			cout << "X" << endl;
-			printB(x,n);
-			cout << "Sx" << endl;
-			printB(Sx,n);
-			cout << "S8x" << endl;
-			printB(S8x,n);
-			cout << "Sx & S8x" << endl;
-			printB(SxS8x, n);
-			cout << "S2x" << endl;
-			printB(S2x,n);
-			cout << "That ^ S2x" << endl;
-			printB(SxS8xS2x,n);
-			cout << "y" << endl;
-			printB(y,n);
-			cout << "y ^ That" << endl;
-			printB(ySxS8xS2x,n);
-			cout << "k[i]" << endl;
-			printB(k[i],n);
-			cout << "That ^ k[i]" << endl;
-			printB(ySxS8xS2xk,n);
-		}*/
 
 		uberzahl tmp = x;
 		x = y ^ ((x.rotateLeft(1,0,n-1) & x.rotateLeft(8,0,n-1)) ^ x.rotateLeft(2,0,n-1)) ^ k[i];
@@ -212,6 +182,7 @@ int main() {
 	key = key << 64;
 	key = key + 0x0706050403020100;
 
+
 	test_plaintext_msg = 0x74206e69206d6f6f;
 	test_plaintext_msg = test_plaintext_msg << 64;
 	test_plaintext_msg = test_plaintext_msg + 0x6d69732061207369;
@@ -228,7 +199,7 @@ int main() {
 		int start = i*n;
 		int end = start + n - 1;
 		int shift = i*n;
-		k[m-1-i] = key.extract(start, end) >> shift;
+		k[i] = key.extract(start, end) >> shift;
 	}
 	keyExpansion();
 
