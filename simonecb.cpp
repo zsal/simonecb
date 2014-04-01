@@ -16,6 +16,13 @@ const int m = 4; //# of key words
 const int T = 72; //# of rounds
 const int j = 4; //const sequence of z
 
+uberzahl test_plaintext_msg = 0x74206e69206d6f6f;
+test_plaintext_msg = test_plaintext_msg << 64;
+test_plaintext_msg += 0x6d69732061207369;
+uberzahl test_ciphertext_msg = 0x8d2b5579afc8a3a0;
+test_ciphertext_msg = test_ciphertext_msg << 64;
+test_ciphertext_msg += 0x3bf72a87efe7b868;
+
 //block size 2n = 128bits
 
 
@@ -99,7 +106,7 @@ pair<uberzahl, uberzahl> decrypt(uberzahl x, uberzahl y) {
 
 
 int main() {
-
+	/*
 	//big number stuff
 	key = 0x8a3f93d142d7ef30;
 	key = key << 64;
@@ -108,6 +115,17 @@ int main() {
 	key = key + 0x3f93d142d7ef308a;
 	key = key << 64;
 	key = key + 0xf93d142d7ef308a3;
+	*/
+
+	//test vector key:
+	//1f1e1d1c1b1a1918 1716151413121110 0f0e0d0c0b0a0908 0706050403020100
+	key = 0x1f1e1d1c1b1a1918;
+	key = key << 64;
+	key = key + 0x1716151413121110;
+	key = key << 64;
+	key = key + 0x0f0e0d0c0b0a0908;
+	key = key << 64;
+	key = key + 0x0706050403020100;
 
 	//initial key secret sharing
 	for (int i = m-1; i >=0; i--){
