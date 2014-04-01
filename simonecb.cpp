@@ -34,12 +34,18 @@ void keyExpansion() {
 	uberzahl c = two.exp(n) - 4;
 
 	for (int i = m; i < T; i++){
-		uberzahl tmp = c ^ k[i-1].rotateRight(3,0,n-1);
-		if (m == 4){
-			tmp = tmp ^ k[i-3];
-		}
-		tmp = tmp ^ tmp.rotateRight(1,0,n-1);
-		k[i] = inverse(k[i-m]) ^ tmp ^ z[j].bit((i-m) % 62) ^ 3;
+
+		// uberzahl tmp = c ^ k[i-1].rotateRight(3,0,n-1);
+		// if (m == 4){
+		// 	tmp = tmp ^ k[i-3];
+		// }
+		// tmp = tmp ^ tmp.rotateRight(1,0,n-1);
+		// k[i] = inverse(k[i-m]) ^ tmp ^ z[j].bit((i-m) % 62) ^ 3;
+
+		uberzahl tmp = k[i-m+3].rotateRight(3,0,n-1) ^ k[i-m+1];
+		k[i] = c ^ z[j].bit((i-m) % 62) ^ k[i-m] ^ tmp ^ tmp.rotateRight(1,0,n-1);
+
+
 	}
 
 }
@@ -58,8 +64,12 @@ uberzahl encrypt(uberzahl msg) {
 		output x,y
 	}
 	*/
+	cout <<"msg: " << msg << endl;
 	uberzahl x = msg >> 64; //first half
+	cout <<"x: "<< x << endl;
 	uberzahl y = msg & ((one << 64) - 1); //second half
+	cout <<"y: "<< y << endl;
+	cout <<"org msg: " << (x<<64) + y << endl;
 
 
 	for (int i = 0; i < T; i++){
