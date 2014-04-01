@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <cmath>
+#include <cassert>
 #include "uberzahl.h"
 
 using namespace std;
@@ -9,28 +10,21 @@ using namespace std;
 uberzahl z[5] = {4506230155203752166, 2575579794259089498, 3160415496042964403, 3957284701066611983, 3781244162168104175};
 
 uberzahl key; //256 bit
-uberzahl two = 2;
+uberzahl one = 1;
 
-const int n = 64; //word size
-const int m = 4; //# of key words
-const int T = 72; //# of rounds
-const int j = 4; //const sequence of z
+const unsigned int n = 64; //word size
+const unsigned int m = 4; //# of key words
+const unsigned int T = 72; //# of rounds
+const unsigned int j = 4; //const sequence of z
 
-uberzahl test_plaintext_msg = 0x74206e69206d6f6f;
-test_plaintext_msg = test_plaintext_msg << 64;
-test_plaintext_msg += 0x6d69732061207369;
-uberzahl test_ciphertext_msg = 0x8d2b5579afc8a3a0;
-test_ciphertext_msg = test_ciphertext_msg << 64;
-test_ciphertext_msg += 0x3bf72a87efe7b868;
+uberzahl test_plaintext_msg, test_ciphertext_msg;
 
 //block size 2n = 128bits
 
-
 uberzahl k[T];
 
-
 uberzahl inverse(const uberzahl input) {
-	return (two.exp(n) -1) ^ input;
+	return ((one << n) - 1) ^ input;
 }
 
 void keyExpansion() {
@@ -46,7 +40,7 @@ void keyExpansion() {
 
 }
 
-pair<uberzahl, uberzahl> encrypt(uberzahl x, uberzahl y) {
+uberzahl encrypt(uberzahl msg) {
 		//Set x to first half of message
 
 	/*while(message isn't done){
@@ -60,6 +54,8 @@ pair<uberzahl, uberzahl> encrypt(uberzahl x, uberzahl y) {
 		output x,y
 	}
 	*/
+	uberzahl x = msg >> 64; //first half
+	uberzahl y = msg & ((one << 64) - 1); //second half
 
 
 	for (int i = 0; i < T; i++){
@@ -67,14 +63,18 @@ pair<uberzahl, uberzahl> encrypt(uberzahl x, uberzahl y) {
 		x = y ^ (x.rotateLeft(1,0,n-1) & x.rotateLeft(8,0,n-1)) ^ x.rotateLeft(2,0,n-1) ^ k[i];
 		y = tmp;
 	}
-	cout << "x: " << x << endl;
-	cout << "y: " << y << endl;
+	//cout << "x: " << x << endl;
+	//cout << "y: " << y << endl;
 
-	return make_pair(x,y);
+	uberzahl cipher_msg = y + (x << 64);
+
+	cout << "cipher msg: " << cipher_msg;
+
+	return cipher_msg;
 
 }
 
-pair<uberzahl, uberzahl> decrypt(uberzahl x, uberzahl y) {
+uberzahl decrypt(uberzahl cipher_msg) {
 
 
 	/*For decryption:
@@ -89,6 +89,9 @@ pair<uberzahl, uberzahl> decrypt(uberzahl x, uberzahl y) {
 		output x,y
 	}*/
 
+	uberzahl x = cipher_msg >> 64; //first half
+	uberzahl y = cipher_msg & ((one << 64) - 1); //second half
+
 
 	for(int i = T-1; i >= 0; i--){
 		uberzahl tmp = y;
@@ -99,7 +102,11 @@ pair<uberzahl, uberzahl> decrypt(uberzahl x, uberzahl y) {
 	cout << "x: " << x << endl;
 	cout << "y: " << y << endl;
 
-	return make_pair(x,y);
+	uberzahl msg = y + (x << 64); 
+	cout << "msg: " << msg;
+
+
+	return msg;
 
 
 }
@@ -127,6 +134,18 @@ int main() {
 	key = key << 64;
 	key = key + 0x0706050403020100;
 
+	test_plaintext_msg = 0x74206e69206d6f6f;
+	test_plaintext_msg = test_plaintext_msg << 64;
+	test_plaintext_msg = test_plaintext_msg + 0x6d69732061207369;
+	test_ciphertext_msg = 0x8d2b5579afc8a3a0;
+	test_ciphertext_msg = test_ciphertext_msg << 64;
+	test_ciphertext_msg = test_ciphertext_msg + 0x3bf72a87efe7b868;
+
+	cout << "test P:" << test_plaintext_msg <<endl;
+	cout << "test C:" << test_ciphertext_msg <<endl;
+
+
+
 	//initial key secret sharing
 	for (int i = m-1; i >=0; i--){
 		int start = i*n;
@@ -135,19 +154,8 @@ int main() {
 		k[m-1-i] = key.extract(start, end) >> shift;
 	}
 
-
-	//todo: break up message into blocks
-	//		blocks into x,y
-
-
-	uberzahl x = "180849305"; //first half of block (n=64 bits)
-	uberzahl y = "534737354"; //last half of block (n=64 bits)
-
-	pair<uberzahl,uberzahl> e = encrypt(x,y);
-	pair<uberzahl, uberzahl> d = decrypt(e.first, e.second);
-
-
-
+	assert(test_ciphertext_msg == encrypt(test_plaintext_msg));
+	assert(test_plaintext_msg == decrypt(test_ciphertext_msg));
 
 }
 

@@ -3,28 +3,7 @@
 #include<vector>
 #include<assert.h>
 #include<cstdlib>
-#include<climits>
 #include"uberzahl.h"
-
-// configuration options :
-// smallType is the storage for uberzahl -- adjust this to adjust performance
-// UBERZAHL_TYPE_MAX, maxBits, and mask should match smallType
-// mediumType and largeType should be at least 2x the storage of small
-#define largeType unsigned long long
-#define mediumType unsigned long long
-#define smallType unsigned int
-#define UBERZAHL_TYPE_MAX UINT_MAX
-#define maxBits 32
-#define mask 0xffffffffL
-
-// adjust for some different compiler RAND functions
-#if RAND_MAX == 32767
-  #define RAND_BITS 16
-#elif RAND_MAX == 2147483647
-  #define RAND_BITS 32
-#else
-  #define RAND_BITS 64
-#endif
 
 uberzahl::uberzahl ( void ){
   convert_to_numeric("0");
@@ -41,15 +20,15 @@ uberzahl::uberzahl ( largeType number ){
 uberzahl::uberzahl ( const char* number ){
   convert_to_numeric( number );
 }
-/*
-uberzahl::uberzahl(const mpz_class& number){
-	mpz_class scale = mask+1;
-	mpz_class current = number;
-	while(current>0) {
-		mpz_class t = current%scale;
-		value.push_back(t.get_ui());
-		current/=scale;
-	}
+
+/*uberzahl::uberzahl(const mpz_class& number){
+  mpz_class scale = mask+1;
+  mpz_class current = number;
+  while(current>0) {
+    mpz_class t = current%scale;
+    value.push_back(t.get_ui());
+    current/=scale;
+  }
 }*/
 
 uberzahl::uberzahl ( const uberzahl& number ){
@@ -90,7 +69,7 @@ uberzahl uberzahl::operator << ( smallType shift ) const
     retval.value.push_back(0);
 
   for ( size_t i=0; i < value.size(); ++i )
-    retval.value[i+largeshift] = (value[i] << smallshift)&mask;
+    retval.value[i+largeshift] = (value[i] << smallshift) & mask;
   for ( size_t i=0; i < value.size(); ++i ){
     mediumType workspace = value[i];
     workspace = workspace >> ( maxBits - smallshift );
@@ -115,7 +94,7 @@ uberzahl uberzahl::operator >> ( smallType shift ) const
   for ( size_t i=0; i + largeshift + 1 < value.size(); ++i ){
     mediumType workspace = value[i + largeshift + 1];
     workspace = workspace << ( maxBits - smallshift );
-    retval.value[i] += workspace&mask;
+    retval.value[i] += workspace & mask;
   }
 
   retval.clean_bits();
@@ -140,7 +119,7 @@ uberzahl uberzahl::operator + ( const uberzahl& input ) const
   // perform addition operation
   for ( size_t i = 0; i < x.value.size(); ++i ){
     workbench = workbench + x.value[i] + y.value[i];
-    retval.value.push_back(workbench&mask);
+    retval.value.push_back(workbench & mask);
     workbench = workbench >> maxBits;
   }
 
@@ -171,7 +150,7 @@ uberzahl uberzahl::operator - ( const uberzahl& input ) const
   // perform subtraction
   for ( size_t i = 0; i < x.value.size(); ++i ){
     workbench = x.value[i] - (y.value[i] + workbench);
-    retval.value.push_back(workbench&mask);
+    retval.value.push_back(workbench & mask);
     workbench = workbench >> maxBits;
     if ( workbench ) workbench = 1;
   }
@@ -199,7 +178,7 @@ uberzahl uberzahl::operator * ( const uberzahl& y ) const
       retval.value[i+j] = workbench & ((1ULL<<maxBits)-1);
       carry = workbench >> maxBits;
     }
-	retval.value[n+i+1] += carry;
+  retval.value[n+i+1] += carry;
   }
   retval.clean_bits();
   return retval;
@@ -207,29 +186,29 @@ uberzahl uberzahl::operator * ( const uberzahl& y ) const
 
 uberzahl uberzahl::operator / ( const uberzahl& number ) const
 {
-	uberzahl x = *this;
-	uberzahl y = number;
-	uberzahl q = 0ULL;
-	assert( y != "0" ); // y can not be 0 in our division algorithm
-	if ( x < y ) return q; // return 0 since y > x
-	x.clean_bits();
+  uberzahl x = *this;
+  uberzahl y = number;
+  uberzahl q = 0ULL;
+  assert( y != "0" ); // y can not be 0 in our division algorithm
+  if ( x < y ) return q; // return 0 since y > x
+  x.clean_bits();
   y.clean_bits();
-	size_t n = x.value.size() - 1;
-	size_t t = y.value.size() - 1;
+  size_t n = x.value.size() - 1;
+  size_t t = y.value.size() - 1;
 
-	// initialize q to the correct size
-	for ( size_t i = 0; i < n - t; ++i )
-		q.value.push_back(0);
-	y = y << (maxBits*(n - t + 1));
-	for( size_t i = maxBits*t; i < maxBits*(n + 1); ++i ){
-		y = y >> 1;
-		q = q << 1;
-		if( x >= y ){
-			x = x - y;
-			q = q + 1;
-		}
-	}
-	return q;
+  // initialize q to the correct size
+  for ( size_t i = 0; i < n - t; ++i )
+    q.value.push_back(0);
+  y = y << (maxBits*(n - t + 1));
+  for( size_t i = maxBits*t; i < maxBits*(n + 1); ++i ){
+    y = y >> 1;
+    q = q << 1;
+    if( x >= y ){
+      x = x - y;
+      q = q + 1;
+    }
+  }
+  return q;
 /*
   uberzahl x = *this;
   uberzahl y = number;
@@ -252,8 +231,8 @@ uberzahl uberzahl::operator / ( const uberzahl& number ) const
   // step 2 -- begin long division on first 2^16-digit
   for ( size_t i=n; i > t; --i ){
 //    x.value.push_back(0);
-	if(i+1>x.value.size())
-		continue;
+  if(i+1>x.value.size())
+    continue;
     largeType workbench = x.value[i];
     workbench = workbench << maxBits;
     workbench = workbench + x.value[i-1];
@@ -438,13 +417,13 @@ bool uberzahl::operator == ( const uberzahl& rhs ) const
 
 /*bool uberzahl::operator == ( const mpz_class& rhs ) const
 {
-	mpz_class scale= mask+1;
-	mpz_class rhstemp = rhs;
-	for(size_t i=0; i<value.size(); ++i){
-		if(rhstemp%scale != value[i])
-			return false;
-		rhstemp/=scale;
-  }	
+  mpz_class scale= mask+1;
+  mpz_class rhstemp = rhs;
+  for(size_t i=0; i<value.size(); ++i){
+    if(rhstemp%scale != value[i])
+      return false;
+    rhstemp/=scale;
+  } 
   return rhstemp == 0;
 }*/
 
