@@ -50,10 +50,10 @@ void keyExpansion() {
 			tmp = tmp ^ k[i-3];
 	 	}
 		tmp = tmp ^ tmp.rotateRight(1,0,n-1);
-		k[i] = inverse(k[i-m]) ^ tmp ^ z[j].bit((i-m) % 62) ^ 3;
+		k[i] = inverse(k[i-m]) ^ tmp ^ z[j].bit(61 - ((i-m) % 62)) ^ 3;
 
 		//uberzahl tmp = k[i-m+3].rotateRight(3,0,n-1) ^ k[i-m+1];
-		//k[i] = c ^ z[j].bit((i-m) % 62) ^ k[i-m] ^ tmp ^ tmp.rotateRight(1,0,n-1);
+		//k[i] = c ^ z[j].bit(61 - ((i-m) % 62)) ^ k[i-m] ^ tmp ^ tmp.rotateRight(1,0,n-1);
 
 
 	}
