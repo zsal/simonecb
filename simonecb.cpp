@@ -75,9 +75,9 @@ uberzahl encrypt(uberzahl msg) {
 	}
 	*/
 	//cout <<"msg: " << msg << endl;
-	uberzahl x = msg >> 64; //first half
+	uberzahl x = msg >> n; //first half
 	//cout <<"x: "<< x << endl;
-	uberzahl y = msg & ((one << 64) - 1); //second half
+	uberzahl y = msg & ((one << n) - 1); //second half
 	//cout <<"y: "<< y << endl;
 	//cout <<"org msg: " << (x<<64) + y << endl;
 
@@ -126,7 +126,7 @@ uberzahl encrypt(uberzahl msg) {
 	//cout << "x: " << x << endl;
 	//cout << "y: " << y << endl;
 
-	uberzahl cipher_msg = y + (x << 64);
+	uberzahl cipher_msg = y + (x << n);
 
 	//cout << "encrypted msg: " << cipher_msg << endl;
 
@@ -149,8 +149,8 @@ uberzahl decrypt(uberzahl cipher_msg) {
 		output x,y
 	}*/
 
-	uberzahl x = cipher_msg >> 64; //first half
-	uberzahl y = cipher_msg & ((one << 64) - 1); //second half
+	uberzahl x = cipher_msg >> n; //first half
+	uberzahl y = cipher_msg & ((one << n) - 1); //second half
 
 
 	for(int i = T-1; i >= 0; i--){
@@ -162,13 +162,30 @@ uberzahl decrypt(uberzahl cipher_msg) {
 	//cout << "x: " << x << endl;
 	//cout << "y: " << y << endl;
 
-	uberzahl msg = y + (x << 64); 
+	uberzahl msg = y + (x << n); 
 	//cout << "decrypted msg: " << msg <<endl;
 
 
 	return msg;
 
 
+
+}
+
+
+
+string getHex(uberzahl u) {	
+	string out = "";
+	while(u > uberzahl("0")) {
+		char hex = ((char)((u % 16)));
+		if (hex <= 9)
+			hex += '0';
+		else
+			hex += 'a' - 10;
+		out = hex + out; 
+		u = u / 16;
+	}
+	return out;
 }
 
 
@@ -187,6 +204,7 @@ int main() {
 	//test vector key:
 	//1f1e1d1c1b1a1918 1716151413121110 0f0e0d0c0b0a0908 0706050403020100
 	key = 0x1f1e1d1c1b1a1918;
+
 	key = key << 64;
 	key = key + 0x1716151413121110;
 	key = key << 64;
@@ -196,8 +214,8 @@ int main() {
 
 	test_plaintext_msg = 0x74206e69206d6f6f;
 	test_plaintext_msg = test_plaintext_msg << 64;
-
 	test_plaintext_msg = test_plaintext_msg + 0x6d69732061207369;
+
 	test_ciphertext_msg = 0x8d2b5579afc8a3a0;
 	test_ciphertext_msg = test_ciphertext_msg << 64;
 	test_ciphertext_msg = test_ciphertext_msg + 0x3bf72a87efe7b868;
@@ -218,10 +236,10 @@ int main() {
 	//decrypt(test_ciphertext_msg);
 
 	uberzahl result = encrypt(test_plaintext_msg);
-	cout << "Input: " << test_plaintext_msg << endl;
-	cout << "Encrypted: " << result << endl;
-	cout << "Expected Encrypted: " << test_ciphertext_msg << endl;
-	cout << "Decrypted: " << decrypt(result) << endl;
+	cout << "Input: \t\t\t" << getHex(test_plaintext_msg) << endl;
+	cout << "Encrypted: \t\t" << getHex(result) << endl;
+	cout << "Expected Encrypted: \t" << getHex(test_ciphertext_msg) << endl;
+	cout << "Decrypted: \t\t" << getHex(decrypt(result)) << endl;
 
 
 }
