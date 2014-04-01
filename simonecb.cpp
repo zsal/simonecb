@@ -29,21 +29,31 @@ uberzahl inverse(const uberzahl input) {
 	return ((one << n) - 1) ^ input;
 }
 
+void printB(const uberzahl input, int numBits){
+	for(int i = numBits - 1; i >= 0; i--){
+		cout << input.bit(i);
+		if(i%4 == 0){
+			cout << " ";
+		}
+	}
+	cout << endl;
+}
+
 void keyExpansion() {
 
 	uberzahl c = two.exp(n) - 4;
 
 	for (int i = m; i < T; i++){
 
-		// uberzahl tmp = c ^ k[i-1].rotateRight(3,0,n-1);
-		// if (m == 4){
-		// 	tmp = tmp ^ k[i-3];
-		// }
-		// tmp = tmp ^ tmp.rotateRight(1,0,n-1);
-		// k[i] = inverse(k[i-m]) ^ tmp ^ z[j].bit((i-m) % 62) ^ 3;
+		uberzahl tmp = k[i-1].rotateRight(3,0,n-1);
+		if (m == 4){
+			tmp = tmp ^ k[i-3];
+	 	}
+		tmp = tmp ^ tmp.rotateRight(1,0,n-1);
+		k[i] = inverse(k[i-m]) ^ tmp ^ z[j].bit((i-m) % 62) ^ 3;
 
-		uberzahl tmp = k[i-m+3].rotateRight(3,0,n-1) ^ k[i-m+1];
-		k[i] = c ^ z[j].bit((i-m) % 62) ^ k[i-m] ^ tmp ^ tmp.rotateRight(1,0,n-1);
+		//uberzahl tmp = k[i-m+3].rotateRight(3,0,n-1) ^ k[i-m+1];
+		//k[i] = c ^ z[j].bit((i-m) % 62) ^ k[i-m] ^ tmp ^ tmp.rotateRight(1,0,n-1);
 
 
 	}
@@ -64,25 +74,61 @@ uberzahl encrypt(uberzahl msg) {
 		output x,y
 	}
 	*/
-	cout <<"msg: " << msg << endl;
+	//cout <<"msg: " << msg << endl;
 	uberzahl x = msg >> 64; //first half
-	cout <<"x: "<< x << endl;
+	//cout <<"x: "<< x << endl;
 	uberzahl y = msg & ((one << 64) - 1); //second half
-	cout <<"y: "<< y << endl;
-	cout <<"org msg: " << (x<<64) + y << endl;
+	//cout <<"y: "<< y << endl;
+	//cout <<"org msg: " << (x<<64) + y << endl;
 
 
 	for (int i = 0; i < T; i++){
+		//Couting each step
+		/*if(i == T-1){
+			uberzahl Sx = x.rotateLeft(1,0,n-1);
+			uberzahl S8x = x.rotateLeft(8,0,n-1);
+			uberzahl SxS8x = Sx & S8x;
+			uberzahl S2x = x.rotateLeft(2,0,n-1);
+			uberzahl SxS8xS2x = SxS8x ^ S2x;
+			uberzahl ySxS8xS2x = y ^ SxS8xS2x;
+			uberzahl ySxS8xS2xk = ySxS8xS2x ^ k[i];
+			cout << "X" << endl;
+			printB(x,n);
+			cout << "Sx" << endl;
+			printB(Sx,n);
+			cout << "S8x" << endl;
+			printB(S8x,n);
+			cout << "Sx & S8x" << endl;
+			printB(SxS8x, n);
+			cout << "S2x" << endl;
+			printB(S2x,n);
+			cout << "That ^ S2x" << endl;
+			printB(SxS8xS2x,n);
+			cout << "y" << endl;
+			printB(y,n);
+			cout << "y ^ That" << endl;
+			printB(ySxS8xS2x,n);
+			cout << "k[i]" << endl;
+			printB(k[i],n);
+			cout << "That ^ k[i]" << endl;
+			printB(ySxS8xS2xk,n);
+		}*/
+
 		uberzahl tmp = x;
-		x = y ^ (x.rotateLeft(1,0,n-1) & x.rotateLeft(8,0,n-1)) ^ x.rotateLeft(2,0,n-1) ^ k[i];
+		x = y ^ ((x.rotateLeft(1,0,n-1) & x.rotateLeft(8,0,n-1)) ^ x.rotateLeft(2,0,n-1)) ^ k[i];
 		y = tmp;
+
+		/*if(i == T-1){
+			printB(x,n);
+			printB(y,n);
+		}*/
 	}
 	//cout << "x: " << x << endl;
 	//cout << "y: " << y << endl;
 
 	uberzahl cipher_msg = y + (x << 64);
 
-	cout << "cipher msg: " << cipher_msg << endl;
+	//cout << "encrypted msg: " << cipher_msg << endl;
 
 	return cipher_msg;
 
@@ -109,7 +155,7 @@ uberzahl decrypt(uberzahl cipher_msg) {
 
 	for(int i = T-1; i >= 0; i--){
 		uberzahl tmp = y;
-		y = x ^ (y.rotateLeft(1,0,n-1) & y.rotateLeft(8,0,n-1)) ^ y.rotateLeft(2,0,n-1) ^ k[i];
+		y = x ^ ((y.rotateLeft(1,0,n-1) & y.rotateLeft(8,0,n-1)) ^ y.rotateLeft(2,0,n-1)) ^ k[i];
 		x = tmp;
 	}
 
@@ -117,7 +163,7 @@ uberzahl decrypt(uberzahl cipher_msg) {
 	//cout << "y: " << y << endl;
 
 	uberzahl msg = y + (x << 64); 
-	cout << "msg: " << msg <<endl;
+	//cout << "decrypted msg: " << msg <<endl;
 
 
 	return msg;
@@ -150,15 +196,14 @@ int main() {
 
 	test_plaintext_msg = 0x74206e69206d6f6f;
 	test_plaintext_msg = test_plaintext_msg << 64;
+
 	test_plaintext_msg = test_plaintext_msg + 0x6d69732061207369;
 	test_ciphertext_msg = 0x8d2b5579afc8a3a0;
 	test_ciphertext_msg = test_ciphertext_msg << 64;
 	test_ciphertext_msg = test_ciphertext_msg + 0x3bf72a87efe7b868;
 
-	cout << "test P:" << test_plaintext_msg <<endl;
-	cout << "test C:" << test_ciphertext_msg <<endl;
-
-
+	//cout << "test P: " << test_plaintext_msg <<endl;
+	//cout << "test C: " << test_ciphertext_msg <<endl;
 
 	//initial key secret sharing
 	for (int i = m-1; i >=0; i--){
@@ -167,11 +212,17 @@ int main() {
 		int shift = i*n;
 		k[m-1-i] = key.extract(start, end) >> shift;
 	}
+	keyExpansion();
 
-	//assert(test_ciphertext_msg == encrypt(test_plaintext_msg));
-	//assert(test_plaintext_msg == decrypt(test_ciphertext_msg));
-	encrypt(test_plaintext_msg);
-	decrypt(test_ciphertext_msg);
+	//encrypt(test_plaintext_msg);
+	//decrypt(test_ciphertext_msg);
+
+	uberzahl result = encrypt(test_plaintext_msg);
+	cout << "Input: " << test_plaintext_msg << endl;
+	cout << "Encrypted: " << result << endl;
+	cout << "Expected Encrypted: " << test_ciphertext_msg << endl;
+	cout << "Decrypted: " << decrypt(result) << endl;
+
 
 }
 
