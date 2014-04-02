@@ -1,2 +1,51 @@
 simonecb
 ========
+Created by: Team MDes5
+Johnathan Corkery, John Rabideau, Zane Salem
+
+This algorithm is a 128/256 Simon encryption, meaning the encryption takes in
+128-bit blocks and a 256-bit key. To run the encryption/decryption, include "simonecb.h" and in a main
+function, first call the key generation function, genKey().
+
+uberzahl key = genKey();
+This will produce a random 256-bit key.
+Next, create a vector of uberzahls for the plaintext message. Each entry in the
+vector should only contain 128 bits.
+
+vector<uberzahl> plaintext;
+
+Create a vector to store the result.
+
+vector<uberzahl> encrypted;
+
+Then call the function encrypt(vector<uberzahl> plaintext, uberzahl key);
+
+encrypted = encrypt(plaintext, key);
+
+To decipher, call decrypt(vector<uberzahl> ciphertext, uberzahl key);
+
+vector<uberzahl> result = decrypt(encrypted, key);
+
+The test vector provided in the document was as follows:
+Key: 1f1e1d1c1b1a1918 1716151413121110 0f0e0d0c0b0a0908 0706050403020100
+Plaintext: 74206e69206d6f6f 6d69732061207369
+Ciphertext: 8d2b5579afc8a3a0 3bf72a87efe7b868
+
+To run this example:
+
+uberzahl key = 0x1f1e1d1c1b1a1918;
+key = key << 64;
+key = key + 0x1716151413121110;
+key = key << 64;
+key = key + 0x0f0e0d0c0b0a0908;
+key = key << 64;
+key = key + 0x0706050403020100;
+
+vector<uberzahl> msg;
+msg[0] = 0x74206e69206d6f6f;
+msg[0] = msg[0] << 64;
+msg[0] = msg[0] + 0x6d69732061207369;
+
+vector<uberzahl> result = encrypt(msg, key);
+
+When the result is printed out, it should be the ciphetext listed above.
