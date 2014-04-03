@@ -36,7 +36,8 @@ int main() {
 	test_ciphertext_msg = test_ciphertext_msg + 0x3bf72a87efe7b868;
 
 	
-
+	cout << "key         = " << getHex(key) << endl;
+	cout << "another key = " << getHex(genKey(256)) << endl; 
 
     vector<uberzahl> plaintext;
     plaintext.push_back(test_plaintext_msg);

@@ -13,8 +13,9 @@ const unsigned int m = 4; //# of key words
 const unsigned int T = 72; //# of rounds
 const unsigned int j = 4; //const sequence of z
 
-const uberzahl one = 1;
-const uberzahl two = 2;
+const uberzahl one  = "1";
+const uberzahl two  = "2";
+const uberzahl zero = "0";
 
 
 
@@ -38,7 +39,7 @@ std::string getHex(uberzahl u);
 
 
 /* Enc / Dec */
-void genKey();
+uberzahl genKey(unsigned long numBits);
 
 void keyExpansion();
 

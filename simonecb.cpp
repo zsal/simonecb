@@ -1,6 +1,24 @@
 #include "simonecb.h"
+#include <random>
+#include <ctime>
 
 using namespace std;
+
+
+uberzahl genKey(unsigned long n) {
+	default_random_engine RNG;
+	RNG.seed(time(NULL));
+	bernoulli_distribution bTrial(.5);
+
+	uberzahl key = "0";
+	for(unsigned long i = 0; i < n; i += 1) {
+		if (bTrial(RNG))
+			key.setBit(i);
+	}
+
+	return key;
+
+}
 
 
 
