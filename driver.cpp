@@ -37,7 +37,7 @@ int main() {
 
 	
 	cout << "key         = " << getHex(key) << endl;
-	cout << "another key = " << getHex(genKey(256)) << endl; 
+	cout << "another key = " << getHex(genKey()) << endl; 
 
     vector<uberzahl> plaintext;
     plaintext.push_back(test_plaintext_msg);

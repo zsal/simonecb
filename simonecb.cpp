@@ -2,10 +2,17 @@
 #include <random>
 #include <ctime>
 
+const int KEY_SIZE_BITS = 256;
+
+
 using namespace std;
 
 
-uberzahl genKey(unsigned long n) {
+
+
+uberzahl genKey() {
+	unsigned long n = KEY_SIZE_BITS;	
+
 	default_random_engine RNG;
 	RNG.seed(time(NULL));
 	bernoulli_distribution bTrial(.5);

@@ -39,7 +39,7 @@ std::string getHex(uberzahl u);
 
 
 /* Enc / Dec */
-uberzahl genKey(unsigned long numBits);
+uberzahl genKey();
 
 void keyExpansion();
 
