@@ -7,7 +7,7 @@ This algorithm is a 128/256 Simon encryption, meaning the encryption takes in
 128-bit blocks and a 256-bit key. To run the encryption/decryption, include "simonecb.h" and in a main
 function, first call the key generation function, genKey().
 
-uberzahl key = genKey(256);
+uberzahl key = genKey();
 This will produce a random 256-bit key.
 Next, create a vector of uberzahls for the plaintext message. Each entry in the
 vector should only contain 128 bits.
