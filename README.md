@@ -1,11 +1,21 @@
 simonecb
 ========
-Created by: Team MDes5
-Johnathan Corkery, John Rabideau, Zane Salem
+
+A lightweight block cipher encryption and decryption library 
+
+<b>Created by:</b> Team MDes5 (EECS475)
+Johnathan Corkery, John Rabideau, and Zane Salem
+
+[<b>Performance Data</b>](https://docs.google.com/a/umich.edu/spreadsheet/ccc?key=0Apc2HgKn2fAEdGRGSzNQZWJVQWRJYkZVQjdxWmNWZVE&usp=sharing#gid=0)
+
+Background
+----------
+
+The SIMON and SPECK Families of Lightweight Block Ciphers come from [this 2013 IACR paper](https://eprint.iacr.org/2013/404)
 
 
 Compilation
-===========
+-----------
 To compile simonecb, be sure to use a compiler that is C++11 compliant. For example, to compile
 the test vector with g++, do the following:
 
@@ -16,7 +26,7 @@ the test vector with g++, do the following:
 
 
 Usage
-=====
+-----
 This algorithm is a 128/256 Simon encryption, meaning the encryption takes in
 128-bit blocks and a 256-bit key. To run the encryption/decryption, include "simonecb.h" and in a main
 function, first call the key generation function, genKey().
@@ -67,4 +77,4 @@ To run this example:
 
 	vector<uberzahl> result = encrypt(msg, key);
 
-When the result is printed out, it should be the ciphetext listed above.
+When the result is printed out, it should be the ciphertext listed above.
