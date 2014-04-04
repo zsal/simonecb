@@ -4,7 +4,6 @@
 
 using namespace std;
 
-//z constants
 
 uberzahl key; //256 bit initially
 
@@ -27,6 +26,8 @@ int main() {
 	key = key << 64;
 	key = key + 0x0706050403020100;
 
+
+	// Expected values
 	test_plaintext_msg = 0x74206e69206d6f6f;
 	test_plaintext_msg = test_plaintext_msg << 64;
 	test_plaintext_msg = test_plaintext_msg + 0x6d69732061207369;
@@ -35,16 +36,14 @@ int main() {
 	test_ciphertext_msg = test_ciphertext_msg << 64;
 	test_ciphertext_msg = test_ciphertext_msg + 0x3bf72a87efe7b868;
 
-	
-	cout << "key         = " << getHex(key) << endl;
-	cout << "another key = " << getHex(genKey()) << endl; 
+
+	cout << "key         = " << getHex(key) << endl; 
 
     vector<uberzahl> plaintext;
     plaintext.push_back(test_plaintext_msg);
     plaintext.push_back(test_plaintext_msg);
     
     
-
 	vector<uberzahl> result = encrypt(plaintext, key);
 	cout << "Input: \t\t\t" << getHex(test_plaintext_msg) << endl;
 	cout << "Encrypted(0): \t\t" << getHex(result[0]) << endl;

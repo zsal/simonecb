@@ -17,7 +17,7 @@ const uberzahl zero = "0";
 const uberzahl one  = "1";
 const uberzahl two  = "2";
 
-// z onstant
+// z constant
 const uberzahl z[5] = {4506230155203752166,
                        2575579794259089498,
                        3160415496042964403, 

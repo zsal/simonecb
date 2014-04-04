@@ -34,8 +34,7 @@ vector<uberzahl> encrypt(vector<uberzahl> msg, uberzahl key) {
 		tmp = tmp ^ tmp.rotateRight(1,0,n-1);
 		k[i] = notOperation(k[i-m]) ^ tmp ^ z[j].bit(61 - ((i-m) % 62)) ^ 3;
 
-		//uberzahl tmp = k[i-m+3].rotateRight(3,0,n-1) ^ k[i-m+1];
-		//k[i] = c ^ z[j].bit(61 - ((i-m) % 62)) ^ k[i-m] ^ tmp ^ tmp.rotateRight(1,0,n-1);
+
 	}
 
     vector<uberzahl> ciphertext;
@@ -84,8 +83,7 @@ vector<uberzahl> decrypt(vector<uberzahl> cipher_msg, uberzahl key) {
 		tmp = tmp ^ tmp.rotateRight(1,0,n-1);
 		k[i] = notOperation(k[i-m]) ^ tmp ^ z[j].bit(61 - ((i-m) % 62)) ^ 3;
 
-		//uberzahl tmp = k[i-m+3].rotateRight(3,0,n-1) ^ k[i-m+1];
-		//k[i] = c ^ z[j].bit(61 - ((i-m) % 62)) ^ k[i-m] ^ tmp ^ tmp.rotateRight(1,0,n-1);
+
 	}
 
 
