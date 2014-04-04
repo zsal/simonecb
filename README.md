@@ -44,10 +44,11 @@ To decipher, call decrypt(vector<uberzahl> ciphertext, uberzahl key);
 
 The test vector provided in the document was as follows:
 
-
-Key: 1f1e1d1c1b1a1918 1716151413121110 0f0e0d0c0b0a0908 0706050403020100
-Plaintext: 74206e69206d6f6f 6d69732061207369
-Ciphertext: 8d2b5579afc8a3a0 3bf72a87efe7b868
+<b>Key:</b> 1f1e1d1c1b1a1918 1716151413121110 0f0e0d0c0b0a0908 0706050403020100
+	
+<b>Plaintext:</b> 74206e69206d6f6f 6d69732061207369
+	
+<b>Ciphertext:</b> 8d2b5579afc8a3a0 3bf72a87efe7b868
 
 To run this example:
 
