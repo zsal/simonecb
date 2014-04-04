@@ -9,6 +9,7 @@ Compilation
 To compile simonecb, be sure to use a compiler that is C++11 compliant. For example, to compile
 the test vector with g++, do the following:
 
+	module load gcc (If on CAEN)
 	g++ -std=c++11 simonecb.cpp driver.cpp uberzahl.cpp -o simonecb
 
 
